@@ -1,2 +1,1 @@
-def func():
-    return 1
+from . import optim

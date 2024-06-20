@@ -6,6 +6,10 @@
 
 https://docs.qq.com/sheet/DWGdVQUNEUmF5V2Nq?tab=BB08J2
 
+## 数据集
+
+- https://jbox.sjtu.edu.cn/l/51eaBT Fashion_mnist 数据集
+
 ## 网络结构
 
 - https://blog.csdn.net/weixin_43669978/article/details/120914852 MiniVGGNet 深层卷积神经网络
