@@ -18,6 +18,25 @@ class Activation:
         return self.__class__.__name__
 
 
+class Sigmoid(Activation):
+    def forward(self, x):
+        self.output = 1 / (1 + np.exp(-x))
+        return self.output
+
+    def backward(self, grad):
+        return grad * self.output * (1 - self.output)
+
+
+class ReLU(Activation):
+    def forward(self, x):
+        self.x = x
+        return np.maximum(0, x)
+
+    def backward(self, dout):
+        dout[self.x <= 0] = 0
+        return dout
+
+
 class GeLU(Activation):
     def forward(self, x):
         self.x = x

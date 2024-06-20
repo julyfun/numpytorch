@@ -2,7 +2,7 @@ import numpy as np
 import os
 
 
-class TensorDataset:
+class DataLoader:
     def __init__(self, X: np.array, y: np.array, batch_size: int = 32, shuffle: bool = True):
         assert len(
             X.shape) > 1, "X data must have atleast 2 dims. shape: (n, input_size)"
