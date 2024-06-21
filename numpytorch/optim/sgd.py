@@ -11,5 +11,5 @@ class SGD(Optimizer):
     def step(self):
         for layer in self.layers:
             if hasattr(layer, 'weights'):
-                layer.weights -= self.lr * layer.dweights.T / self.batch_size
+                layer.weights -= self.lr * layer.dweights / self.batch_size
                 layer.biases -= self.lr * layer.dbiases / self.batch_size

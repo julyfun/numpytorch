@@ -39,8 +39,8 @@ class MaxPool2d(Layer):
 
 
 class AvgPool2d(Layer):
-    def __init__(self, pool_size):
-        self.pool_size = pool_size
+    def __init__(self, kernel_size):
+        self.pool_size = kernel_size
         self.cache = None
 
     def forward(self, X):

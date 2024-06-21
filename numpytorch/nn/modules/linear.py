@@ -36,7 +36,7 @@ class Linear(Layer):
         return np.dot(inputs, self.weights.T) + self.biases
 
     def backward(self, dvalues):
-        self.dweights = np.dot(self.inputs.T, dvalues)
+        self.dweights = np.dot(self.inputs.T, dvalues).T
         self.dbiases = np.sum(dvalues, axis=0, keepdims=True)
 
         return np.dot(dvalues, self.weights)

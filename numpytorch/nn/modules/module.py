@@ -1,19 +1,28 @@
 import numpy as np
 import os
+import time
 
 
 class Module:
     def __init__(self):
         self.layers = []
+        self.f_timer = {}
+        self.b_timer = {}
 
     def forward(self, x):
-        for layer in self.layers:
+        for i, layer in enumerate(self.layers):
+            start_time = time.perf_counter()
             x = layer.forward(x)
+            end_time = time.perf_counter()
+            self.f_timer[i] = self.f_timer.get(i, 0) + (end_time - start_time)
         return x
 
     def backward(self, grad):
-        for layer in reversed(self.layers):
+        for i, layer in zip(reversed(range(len(self.layers))), reversed(self.layers)):
+            start_time = time.perf_counter()
             grad = layer.backward(grad)
+            end_time = time.perf_counter()
+            self.b_timer[i] = self.b_timer.get(i, 0) + (end_time - start_time)
 
     def add(self, layer):
         self.layers.append(layer)

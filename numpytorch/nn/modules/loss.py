@@ -22,14 +22,40 @@ class MSELoss(_Loss):
         return self.dout
 
 
+# class CrossEntropyLoss(_Loss):
+#     def forward(self, y_pred, y_true):
+#         y_pred = np.clip(y_pred, 1e-15, 1 - 1e-15)
+#         return - np.sum(y_true * np.log(y_pred), axis=-1)
+
+#     def backward(self, y_pred, y_true):
+#         self.dout = y_pred - y_true
+#         return self.dout
+
 class CrossEntropyLoss(_Loss):
     def forward(self, y_pred, y_true):
-        y_pred = np.clip(y_pred, 1e-15, 1 - 1e-15)
-        return - np.sum(y_true * np.log(y_pred), axis=-1)
+        # 计算最大值用于数值稳定
+        self.max_o = np.max(y_pred, axis=1, keepdims=True)
+
+        # 计算对数softmax
+        log_softmax = y_pred - self.max_o - \
+            np.log(np.sum(np.exp(y_pred - self.max_o), axis=1, keepdims=True))
+
+        # 计算交叉熵损失
+        retval = -log_softmax[np.arange(y_true.shape[0]), y_true.reshape(-1)]
+
+        return retval
 
     def backward(self, y_pred, y_true):
-        self.dout = y_pred - y_true
-        return self.dout
+        # 计算softmax
+        softmax = np.exp(y_pred - self.max_o) / \
+            np.sum(np.exp(y_pred - self.max_o), axis=1, keepdims=True)
+
+        # 创建梯度矩阵
+        grad = softmax
+        grad[np.arange(y_true.shape[0]), y_true.reshape(-1)] -= 1
+
+        # 返回平均梯度
+        return grad / y_true.shape[0]
 
 
 class CrossEntropyLoss2(_Loss):

@@ -47,6 +47,10 @@ class GeLU(Activation):
 
 
 class Softmax(Activation):
+    """
+    do not use this!
+    """
+
     def forward(self, inputs):
         self.inputs = inputs
         exp_values = np.exp(inputs - np.max(inputs, axis=1, keepdims=True))

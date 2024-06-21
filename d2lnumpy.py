@@ -158,7 +158,8 @@ def load_mnist(path, kind='train'):
 
 def load_mnist_norm(path, kind='train'):
     images, labels = load_mnist(path, kind)
-    return images.astype(np.float64) / 255.0, labels
+    return (images.astype(np.float64) / 255.0).reshape(-1, 1, 28, 28), labels
+    # return images.astype(np.float64) / 255.0, labels
 
 
 def load_data_fashion_mnist(batch_size, path="dataset"):  # @save
