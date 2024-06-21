@@ -1,3 +1,4 @@
+from numpytorch.utils.data import DataLoader
 from matplotlib_inline import backend_inline
 from matplotlib import pyplot as plt
 from IPython import display
@@ -128,6 +129,66 @@ class Timer:
     def cumsum(self):
         """Return the accumulated time."""
         return np.array(self.times).cumsum().tolist()
+
+
+def load_mnist(path, kind='train'):
+    import os
+    import gzip
+    import numpy as np
+
+    """Load MNIST data from `path`"""
+    labels_path = os.path.join(path,
+                               '%s-labels-idx1-ubyte.gz'
+                               % kind)
+    images_path = os.path.join(path,
+                               '%s-images-idx3-ubyte.gz'
+                               % kind)
+
+    with gzip.open(labels_path, 'rb') as lbpath:
+        labels = np.frombuffer(lbpath.read(), dtype=np.uint8,
+                               offset=8)
+
+    with gzip.open(images_path, 'rb') as imgpath:
+        images = np.frombuffer(imgpath.read(), dtype=np.uint8,
+                               offset=16).reshape(len(labels), 784)
+
+    labels = labels.reshape(len(labels), 1)
+    return images, labels
+
+
+def load_mnist_norm(path, kind='train'):
+    images, labels = load_mnist(path, kind)
+    return images.astype(np.float64) / 255.0, labels
+
+
+def load_data_fashion_mnist(batch_size, path="dataset"):  # @save
+    """下载Fashion-MNIST数据集，然后将其加载到内存中"""
+    mnist_train = load_mnist_norm(path, kind='train')
+    mnist_test = load_mnist_norm(path, kind='t10k')
+
+    return (DataLoader(*mnist_train, batch_size, shuffle=True,),
+            DataLoader(*mnist_test, batch_size, shuffle=False,))
+
+
+def get_fashion_mnist_labels(labels):  # @save
+    """返回Fashion-MNIST数据集的文本标签"""
+    text_labels = ['t-shirt', 'trouser', 'pullover', 'dress', 'coat',
+                   'sandal', 'shirt', 'sneaker', 'bag', 'ankle boot']
+    return [text_labels[int(i)] for i in labels]
+
+
+def show_images(imgs, num_rows, num_cols, titles=None, scale=1.5):  # @save
+    """绘制图像列表"""
+    figsize = (num_cols * scale, num_rows * scale)
+    _, axes = d2l.plt.subplots(num_rows, num_cols, figsize=figsize)
+    axes = axes.flatten()
+    for i, (ax, img) in enumerate(zip(axes, imgs)):
+        ax.imshow(img)
+        ax.axes.get_xaxis().set_visible(False)
+        ax.axes.get_yaxis().set_visible(False)
+        if titles:
+            ax.set_title(titles[i])
+    return axes
 
 
 numpy = lambda x, *args, **kwargs: x.detach().numpy(*args, **kwargs)

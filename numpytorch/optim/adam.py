@@ -4,6 +4,7 @@ import numpy as np
 
 
 class Adam(Optimizer):
+    # [todo] batch size
     def __init__(self, layers, lr=0.001, beta1=0.9, beta2=0.999, epsilon=1e-8):
         self.layers = [layer for layer in layers if hasattr(layer, 'weights')]
         self.learning_rate = lr
