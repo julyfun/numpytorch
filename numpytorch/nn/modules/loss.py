@@ -35,9 +35,19 @@ class CrossEntropyLoss(_Loss):
 class CrossEntropyLoss2(_Loss):
     def forward(self, y_pred, y_true):
         y_pred = np.clip(y_pred, 1e-15, 1 - 1e-15)
-        return -np.log(y_pred[np.arange(y_true.shape[0]), y_true])
+        # y_true
+        # print('y_true')
+        # print(y_true)
+        # print(y_true.reshape(-1))
+        # 这 shape 处理真逆天啊
+
+        retval = - \
+            np.log(y_pred[np.arange(y_true.shape[0]), y_true.reshape(-1)])
+        # print('idx:')
+        # print(y_pred[np.arange(y_true.shape[0]), y_true.reshape(-1)])
+        return retval
 
     def backward(self, y_pred, y_true):
         self.dout = y_pred.copy()
-        self.dout[np.arange(y_true.shape[0]), y_true] -= 1
+        self.dout[np.arange(y_true.shape[0]), y_true.reshape(-1)] -= 1
         return self.dout
